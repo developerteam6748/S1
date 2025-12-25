@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; font-family: sans-serif; }
+        canvas { display: block; background: #050505; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <canvas id="g"></canvas>
+    <script>
+        const c = document.getElementById('g');
+        const x = c.getContext('2d');
+        c.width = 300; c.height = 450;
+        let p = {x: 140, y: 400, w: 20, h: 20}, obs = [], score = 0;
+        function draw() {
+            x.clearRect(0,0,300,450);
+            x.fillStyle = "#00ffff"; x.fillRect(p.x, p.y, p.w, p.h);
+            if(Math.random() < 0.05) obs.push({x: Math.random()*280, y: -20, s: 5});
+            obs.forEach((o, i) => {
+                o.y += o.s;
+                x.fillStyle = "#ff0055"; x.fillRect(o.x, o.y, 25, 25);
+                if(p.x < o.x+25 && p.x+20 > o.x && p.y < o.y+25 && p.y+20 > o.y) location.reload();
+                if(o.y > 450) { obs.splice(i,1); score++; }
+            });
+            x.fillStyle = "white"; x.fillText("Score: " + score, 10, 20);
+            requestAnimationFrame(draw);
+        }
+        window.ontouchmove = (e) => {
+            let t = e.touches[0].clientX - (window.innerWidth-300)/2;
+            if(t > 0 && t < 280) p.x = t;
+        };
+        draw();
+    </script>
+</body>
+</html>
